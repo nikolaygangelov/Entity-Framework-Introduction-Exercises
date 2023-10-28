@@ -1,0 +1,83 @@
+using SoftUni.Data;
+using SoftUni.Models;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+
+namespace SoftUni
+{
+    public class StartUp
+    {
+        static void Main(string[] args)
+        {
+            //instantiate DbContext
+            using SoftUniContext context = new SoftUniContext();
+
+            //printing info about employees on the console by calling AddNewAddressToEmployee method
+            Console.WriteLine(DeleteProjectById(context));
+        }
+
+        //Problem 7
+        public static string GetEmployeesInPeriod(SoftUniContext context)
+        {
+            //turning needed info about employees into a collection using nested anonymous objects
+            //using less data
+            var employees = context.Employees
+                .Select(e => new
+                {
+                    Firstname = e.FirstName,
+                    Lastname = e.LastName,
+                    e.EmployeeId,
+                    ManagerFirstname = e.Manager.FirstName,
+                    ManagerLastname = e.Manager.LastName,
+                    EmployeePjs = e.EmployeesProjects
+                    .Select(p => new
+                    {
+                        ProjectName = p.Project.Name,
+                        StartDate = p.Project.StartDate,
+                        EndDate = p.Project.EndDate
+                    })
+                })
+                .ToList()
+                .OrderBy(e => e.EmployeeId)
+                .Take(10);
+
+            //using StringBuilder to gather all info in one string
+            StringBuilder sb = new StringBuilder();
+
+            //getting access to employee object and its properties
+            foreach (var employee in employees)
+            {
+                //using AppendLine so that every printing to be on separate line
+                sb.AppendLine($"{employee.Firstname} {employee.Lastname} - Manager: {employee.ManagerFirstname} {employee.ManagerLastname}");
+
+
+                if (employee.EmployeePjs.ToList().Any())
+                {
+                    //getting access to project object and its properties
+                    foreach (var pj in employee.EmployeePjs.ToList())
+                    {
+                        if (pj.StartDate.Year >= 2001 && pj.StartDate.Year <= 2003)
+                        {
+                            if (pj.EndDate != null)
+                            {
+                                //using ToString() to change date format
+                                //using Culture.InvariantCulture which does not change format
+                                sb.AppendLine($"--{pj.ProjectName} - {pj.StartDate.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)} - {pj.EndDate.Value.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)}");
+                            }
+                            else
+                            {
+                                sb.AppendLine($"--{pj.ProjectName} - {pj.StartDate.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)} - not finished");
+                            }
+                        }
+                    }
+                }
+            }
+
+            //using Trim() to get rid of white spaces
+            return sb.ToString().Trim();
+        }
+
+    }
+}

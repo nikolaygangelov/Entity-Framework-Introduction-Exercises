@@ -12,7 +12,7 @@ namespace SoftUni
             //instantiate DbContext
             using SoftUniContext context = new SoftUniContext();
 
-            //printing info about employees on the console by calling GetEmployeesWithSalaryOver50000 method
+            //printing info about employees on the console by calling GetEmployeesFullInformation method
             Console.WriteLine(GetEmployeesFullInformation(context));
         }
 

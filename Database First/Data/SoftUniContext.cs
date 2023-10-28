@@ -29,7 +29,7 @@ namespace SoftUni.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-RE44NV4\\SQLEXPRESS;Database=SoftUni;Integrated Security=true");
+                optionsBuilder.UseSqlServer("Server=.;Database=SoftUni;Integrated Security=true");
             }
         }
 

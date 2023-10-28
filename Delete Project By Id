@@ -1,0 +1,52 @@
+using SoftUni.Data;
+using SoftUni.Models;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+
+namespace SoftUni
+{
+    public class StartUp
+    {
+        static void Main(string[] args)
+        {
+            //instantiate DbContext
+            using SoftUniContext context = new SoftUniContext();
+
+            //printing info about employees on the console by calling DeleteProjectById method
+            Console.WriteLine(DeleteProjectById(context));
+        }
+
+        //problem 14
+        public static string DeleteProjectById(SoftUniContext context)
+        {
+            var projectWithId2 = context.EmployeesProjects
+                //using where clause to filter the needed project
+                .Where(p => p.ProjectId == 2);
+
+            //firstly removing references of selected project
+            context.EmployeesProjects.RemoveRange(projectWithId2);
+
+            //secondly removing the project itself
+            Project project = context.Projects.Find(2);
+            context.Projects.Remove(project);
+
+            //performing the actuall deleting
+            context.SaveChanges();
+
+            var projectNames = context.Projects
+                .Select(p => new
+                {
+                    p.Name
+                })
+                .ToArray()
+                .Take(10);
+
+            return String.Join(Environment.NewLine, projectNames
+                .Select(p => p.Name));
+            
+        }
+
+    }
+}

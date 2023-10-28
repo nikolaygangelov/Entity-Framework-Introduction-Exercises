@@ -14,8 +14,8 @@ namespace SoftUni
             //instantiate DbContext
             using SoftUniContext context = new SoftUniContext();
 
-            //printing info about employees on the console by calling AddNewAddressToEmployee method
-            Console.WriteLine(DeleteProjectById(context));
+            //printing info about employees on the console by calling GetAddressesByTown method
+            Console.WriteLine(GetAddressesByTown(context));
         }
 
         //problem 8
